@@ -21,6 +21,7 @@ import org.springframework.web.context.WebApplicationContext;
 import javax.xml.transform.Result;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.as;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -143,6 +144,15 @@ class BlogApiControllerTest {
 
         UpdateArticleRequest request = new UpdateArticleRequest(newTitle, newContent);
 
-//        ResultActions result = mockMvc.perform()
+        ResultActions result = mockMvc.perform(put(url, savedArticle.getId())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(request)));
+
+        result.andExpect(status().isOk());
+
+        Article article = blogRepository.findById(savedArticle.getId()).get();
+
+        assertThat(article.getTitle()).isEqualTo(newTitle);
+        assertThat(article.getContent()).isEqualTo(newContent);
     }
 }
