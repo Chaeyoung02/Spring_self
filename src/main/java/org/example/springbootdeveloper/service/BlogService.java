@@ -36,6 +36,8 @@ public class BlogService {
 
         authorizeArticleAuthor(article);
         blogRepository.delete(article);
+
+
     }
 
     @Transactional
